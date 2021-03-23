@@ -1,0 +1,441 @@
+---
+title: "Taller 1"
+output:
+  html_document: default
+  word_document: default
+  pdf_document: default
+---
+
+
+## Intervalos de confianza
+
+
+```{r}
+library(readxl)
+```
+
+
+# Ejercicio 1
+De una cierta población de mensajes de texto se ha extraído una muestra de 64 mensajes y se ha calculado el número de palabras utilizadas en el mensaje. La cantidad promedio de palabras en esta muestra es de 65. Se sabe por otras experiencias que la desviación estándar de la población en 8.
+
+```{r}
+#Hallar un intervalo de confianza para el promedio a los niveles de confianza 0.95 
+
+alpha<- 0.05
+n = 64
+varianza <- 64
+media <- 65
+cuantil<- qnorm(1 - alpha/2)
+
+
+lim_inf<-media - cuantil * sqrt(varianza) / sqrt(n)
+lim_inf
+
+
+lim_sup<- media + cuantil * sqrt(varianza) / sqrt(n)
+lim_sup
+
+
+```
+Para el 95% de nivelconfianza se obtiene el intervalo (63.04004, 66.95996).
+**P[63.04004 ≤ μ ≤ 66.95996 ] = 0.95**
+
+
+```{r}
+#Hallar un intervalo de confianza para el promedio a los niveles de confianza 0.99 
+
+alpha<- 0.01
+n = 64
+varianza <- 64
+media <- 65
+cuantil<- qnorm(1 - alpha/2)
+
+
+lim_inf<-media - cuantil * sqrt(varianza) / sqrt(n)
+lim_inf
+
+
+lim_sup<- media + cuantil * sqrt(varianza) / sqrt(n)
+lim_sup
+
+```
+Para el 99% de nivelconfianza se obtiene el intervalo (62.42417, 67.57583).
+**P[62.42417 ≤ μ ≤ 67.575836 ] = 0.99**
+
+```{r}
+#Asumiendo una desviación estándar de la muestra de 6, calcule un intervalo de confianza al 0.95.
+
+alpha<- 0.05
+n = 64
+varianza <- 36
+media <- 65
+cuantil<- qnorm(1 - alpha/2)
+
+
+lim_inf<-media - cuantil * sqrt(varianza) / sqrt(n)
+lim_inf
+
+
+lim_sup<- media + cuantil * sqrt(varianza) / sqrt(n)
+lim_sup
+
+
+
+```
+Para el 95% de nivel confianza con una desviación estándar de 6 se obtiene el intervalo (63.53003, 66.46997).
+
+**P[63.53003 ≤ μ ≤ 66.46997 ] = 0.95**
+
+
+Compare los resultados de los numerales anteriores y de una conclusión sobre las observaciones.
+
+Desviación estándar 8 el Intervalo de confianza es: **P[63.04004 ≤ μ ≤ 66.95996 ] = 0.95**
+
+Desviación estándar 8 el Intervalo de confianza es: **P[62.42417 ≤ μ ≤ 67.575836 ] = 0.99**  
+
+Desviación estándar 6 el Intervalo de confianza es: **P[63.53003 ≤ μ ≤ 66.46997 ] = 0.95**
+
+
+Para el nivel de confianza al 95% se puede observar que en ambos casos los intervalos de confianza son muy similares, a pesar de la diferencia en la desviación estándar.
+
+Con respecto al nivel de confianza al 99% se puede evidenciar un intervalo un poco más amplio que en el caso anterior.
+
+
+
+# Ejercicio 2 
+
+En una muestra de 900 personas con peolo oscuro se encontró que 150 de ellas tenían los ojos azules. Construir un intevalo de confianza al 95% para la proporción de individuos que teniendo el pelo oscuro posee los ojos azules. ¿Son compatibles los resultados con la suposición de que dicha proporción vale 1/4?
+
+
+```{r}
+#Intervalo de confianza para la proporción
+alpha <- 0.05
+n <- 900
+p <- 150/900
+cuantil <- qnorm(1 - alpha/2)
+
+#Calculamos Límite Inferior
+limite_inferior <- p - cuantil * sqrt (p*(1 - p))  / sqrt (n)
+limite_inferior
+
+#Calculamos Límite Superior
+limite_suerior<- p + cuantil * sqrt (p*(1 - p))  / sqrt (n)
+limite_suerior
+
+```
+
+```{r}
+#Podemos utilizar la función Prop.test
+prop.test(150,900)
+```
+
+**Respuesta Ejercicio 2**
+
+El intervalo de confianza, a un nivel de confianza del 95% para las personas con los ojos azules en la población es **(0.1432251 0.1930061)**, por lo tanto no es compatible el resultado con la suposición de que dicha proporción vale 1/4, ya que 1/4 no se encuentra en el intervalo de confianza.
+
+
+
+
+# Ejercicio 3
+
+Un experimentador desea verificar la variabilidad de mediciones obtenidas con un equipo diseñado para medir el volumen de una fuente de audio. El equipo registra tres mediciones independientes del mismo sonido: 4.1, 5.2 y 10.2. Estime σ2 con un coeficiente de confianza del 95%.
+
+```{r}
+sonido <- c(4.1, 5.2, 10.2)
+n = length(sonido) 
+alpha1 <- 0.05
+varianza <- var(sonido)
+L1 <- (n - 1) * varianza / qchisq(1-alpha1 / 2,n - 1)
+L2 <- (n - 1) * varianza / qchisq(alpha1 /2,n - 1)
+IC <- c(L1,L2)
+IC
+
+```
+**Respuesta Ejercicio 3:** El intervalo de confianza para σ2 con un coeficiente de confianza del 95% es de **(2.865369, 417.492699)**
+
+
+
+# Ejercicio 4
+
+La siguiente tabla proporciona datos sobre la precipitación total registrada en 11 estaciones metereológicas de dos provincias de cierto país.
+
+```{r}
+Precipitacion = data.frame(
+  Prov_A = c(100,89,84,120,130,105,60,70,90,108,130),
+  Prov_B = c(120,115,96,115,140,120,75,90,108,130,135))
+Precipitacion
+```
+
+
+**a)** Suponiendo independencia y normalidad calcular un intervalos de confianza del 90% para el cociente de varianzas en ambas poblaciones.¿Puede ausmirse que ambas varianzas son iguales?
+
+```{r}
+var.test(Precipitacion$Prov_A, Precipitacion$Prov_B,  conf.level= 0.90)
+
+```
+**Solución a)**
+
+Según los resultados obtenidos anteriormente se puede afirmar que el intervalo de confianza a un nivel de confianza del **90%** para el cociente de las varianzas de las dos distribuciones es **(0.4524309,  4.0130152)**. Este intervalo de confianza contiene al valor 1, por lo que se puede suponer que las varianzas de las dos distribuciones son idénticas.
+
+
+
+**b)** Según los resultados obtenidos en 1.Obtener un intervalo de confianza al 80% para la diferencia del número medio de precipitaciones entre las dos provincias.¿Puede suponer que el número medio de precipitaciones de las provincias es igual?
+
+
+```{r}
+
+var.test(Precipitacion$Prov_A, Precipitacion$Prov_B,  conf.level= 0.8)
+
+```
+El intervalo de confianza al 80% para la diferencia del número medio de precipitaciones entre las dos provincias es **(0.5801448, 3.1295847)**.
+Este intervalo de confianza contiene al valor **1**, por lo que se puede suponer que las varianzas de las dos distribuciones son idénticas.
+
+
+```{r}
+# Como en anterior paso se concluyó la igualdad de las varianzas debemos establecer a TRUE el valor del parámetro var.equal 
+
+t.test(Precipitacion$Prov_A, Precipitacion$Prov_B, conf.level = 0.80, var.equal = TRUE)
+
+```
+**Solución b)**
+
+Se puede afirmar que el intervalo de confianza a un 80% de confianza para la diferencia de las medias del número medio de precipitaciones entre las dos provincias es: **(-26.446718 ,  -2.280555)**. Como el 0 no está dentro de este intervalo, no se puede decir que ambas medias son idénticas.
+
+
+# Ejercicio 5
+
+Se realiza un estudio sobre un grupo de personas sobre las que se toma el número de km recorridos en una caminata, el sexo y si hacen o no deporte. Para realizar dicho estudio se toma una muestra de 55 personas. Calcular un intervalo de confianza al 92% para la diferencia entre la proporción de hombres y de mujeres que practican deportes.¿Puede considerarse que ambas proporciones son iguales?
+
+```{r}
+
+setwd('C:/Users/Aleja/Documents/Universidad/Diseño estadístico')
+caminata <- read.table('caminata.txt', header = TRUE)
+caminata
+
+```
+```{r}
+#Determinamos cuantos hombres y mujeres hacen deporte
+table(caminata$Sexo, caminata$Deporte)
+```
+
+
+```{r}
+vector_Deportistas<- c(8, 15)
+vector_Total<- c(31, 24)
+
+prop.test(vector_Deportistas, vector_Total, conf.level = 0.92)
+
+
+```
+
+**Solución 5**
+
+El intervalo de confianza al 92% de confianza es **(-0.6249422,  -0.1089287)**. Como podemos observar el 0 no está dentro de este intervalo, por lo tanto, podemos indicar que las proporciones de hombres y mujeres que hacen deporte no son iguales.
+
+
+
+# Ejercicio 6
+
+El archivo empleados.xls contiene información de 100 empleados de una empresa sobre la edad, la estatura, el peso, el sexo y posesión de un vehículo.
+
+```{r}
+
+
+setwd('C:/Users/Aleja/Documents/Universidad')
+empleados <- read_excel('empleados.xls')
+empleados
+
+```
+
+**a)** Suponiendo la normalidad de la variable Altura, calcular un intervalo de confianza sobre la altura media poblacional a un 95% de confianza, si se sabe que la varianza poblacional es 6.
+
+```{r}
+
+alpha <- 0.05
+varianza <- 6
+
+n <- length(empleados$Altura)
+media <- mean(empleados$Altura)
+cuantil<- qnorm(1-alpha/2)
+
+#Calculamos Limites
+limite_inferior<-media -cuantil * sqrt(varianza) / sqrt(n)
+limite_inferior
+ 
+limite_superior<- media + cuantil * sqrt(varianza) / sqrt(n)
+limite_superior
+
+
+```
+**Solución  a)**
+El Intervalo de confianza sobre la altura media poblacional a un 95% de confianza es de **(176.5175, 177.4825)**
+
+
+**b)** Obtener un intervalo de confianza al 96% para la proporción de empleados varones de en la población.
+
+```{r}
+table(empleados$Sexo)
+
+```
+```{r}
+prop.test(87, 99, conf.level = 0.96)
+```
+**Solución  b)**
+
+El intervalo de confianza al 96% para la proporción de empleados varones de en la población es de **(0.7896074, 0.9347974)**
+
+
+**c)** 
+Asumiendo que el peso en hombres y mujeres se distribuyen según distribuciones normales con medias y varianzas desconocidas. Calcular un intervalo de confianza a un nivel de confianza del 95% para el cociente de varianzas en ambas poblaciones. ¿Puede asumirse que ambas varianzas son iguales? 
+
+```{r}
+peso.hombres<- empleados$Peso[empleados$Sexo == 'Hombre']
+peso.mujeres<- empleados$Peso[empleados$Sexo == 'Mujer']
+var.test(peso.hombres, peso.mujeres, alternative = 'two.sided', conf.level = 0.95)
+
+```
+**Solución  c)**
+El intervalo de confianza es **(0.6112226, 3.8937784)** a un nivel de confianza del 95%, como se observa incluye al 1 esto implica que las dos varianzas son iguales.
+
+
+
+**d)** Suponiendo igualdad de varianzas, obtener un intervalo de confianza al 95% para la diferencia del peso medio entre hombres y mujeres.¿Puede suponerse que el peso medio entre hombres y mujeres es igual.
+
+```{r}
+t.test(peso.hombres, peso.mujeres, alternative = 'two.sided',  var.equal = TRUE)
+
+```
+
+**Solución  d)**
+El intervalo de confianza a un 95% de confianza para la diferencia de las medias del peso para hombres y mujeres es **(4.167581, 19.556557)**. Como el 0 no está dentro de este intervalo, podemos indicar que el peso medio de hombres y mujeres no es igual.
+
+
+
+# Ejercicio 7
+
+Con el fin de estudiar el número medio de flexiones continuadas que pueden realizar sus alumnos, un profesor de educación física somete a 75 de ellos, elegidos aleatoriamente, a una prueba. El número de flexiones realizado por cada alumno, así como su sexo y si realizan o no deporte fuera del horario escolar se muestran en el archivo Flexiones.txt.
+
+
+
+```{r}
+setwd('C:/Users/Aleja/Documents/Universidad/Diseño estadístico')
+Flex <- read.table('Flexiones.txt', header = TRUE)
+Flex
+
+```
+
+**a)** Se sabe que el número de flexiones se distribuyen normales con varianza poblacional 7.5. ¿Puede asumirse, considerando un nivel de significancia del 5%, que el número medio de flexiones que realizan los alumnos es de 55?
+
+```{r}
+alpha<- 0.05
+media<- mean(Flex$Flexiones)
+mu_0 <- 55
+varianza <- 7.5
+n <- nrow(Flex)
+Z<- (media - mu_0) / (sqrt(varianza)/sqrt(n))
+-Z
+
+cuantil<- qnorm(1 - alpha/2)
+cuantil
+
+
+```
+**Solución a)**: Como el estadístico de contraste **(15.47408)** es mayor que el valor crítico (1.959964), en este caso se rechaza la hipótesis nula. Es decir, no puede asumirse que el número medio de flexiones que realizan los alumnos es de 55.
+ 
+ 
+ 
+ 
+**b)** Contrastar la hipótesis de que el número medio de flexiones realizadas por los alumnos es de 50 a un nivel de significancia del 2%. Suponer normalidad con varianza desconocida.
+ 
+planteamos el contraste de hipótesis asociado a este supuesto.
+
+**H0: μ =50**
+
+**H1: μ!=50**
+
+```{r}
+ t.test(Flex$Flexiones, alternative = 'two.sided', mu = 50, conf.level = 0.98)
+```
+**Solución b):**
+
+Teniendo en cuenta que el p-valor **(0.8776)** es superior al nivel de significación (0.02) no podemos rechazar la hipótesis nula, por lo que podemos asumir que el número medio de flexiones que realizan los alumnos es de 50.
+ 
+ 
+**c)** Contrastar a un nivel de confianza del 95%, si la proporción de alumnos varones es mayor o igual que 0.5.
+```{r}
+table(Flex$Sexo)
+
+```
+```{r}
+ prop.test(43, 75, p = 0.5, alternative = 'less', conf.level = 0.95)
+```
+**Solución c)**
+
+Como el p-valor **0.8759** es mayor que el nivel de significación, que es 0.05, no rechazamos la hipótesis de que la proporción de alumnos es mayor o igual que 0.5.
+
+
+
+# Ejercicio 8
+
+Para estudiar los efectos de un programa de control de peso, el profesor de educación física selecciona aleatoriamente a 6 estudiantes y les registra el peso antes y después de pasar por el programa:
+
+
+¿Puede suponer, a un nivel de significancia del 5% que el programa para el control de peso es efectivo?
+
+**H0: μ_antes = μ_después**
+
+**H1: μ_antes!= μ_después**
+
+
+```{r}
+Pesos = data.frame(
+  Antes = c(72, 73.5,70,71.5,76,80.5),
+  Despues = c(73,74.5,74,74.5,75,82))
+Pesos
+```
+```{r}
+t.test(Pesos$Antes, Pesos$Despues, alternative = 'two.sided', mu = 0, paired = TRUE)
+```
+**Solución Ejercicio 8**
+El p-valor asociado al contraste es **0.07676**. Como este p-valor es mayor que 0.05, podemos afirmar que la diferencia entre los pesos medios de los alumnos antes y después de seguir el programa de control de peso es equivalentemente es decir, que ambos pesos medios pueden suponerse iguales.
+
+
+
+# Ejercicio 9
+La directora de un hospital quiere comprobar si los ingresos en el hospital se producen en la misma proporción durante todos los días de la semana. Para ello, se registra el número de ingresos durante una semana cualquiera. Los datos se recogen en la siguiente tabla:
+
+
+```{r}
+Registros = data.frame(
+  Dia_semana = c('Lunes','Martes','Miercoles','Jueves','Viernes','Sábado','Domingo'),
+  Num_ingresos = c(78,90,94,89,110,84,44))
+Registros
+```
+Contrastar, a un nivel de significancia del 5% si la hipótesis de la directora del hospital puede suponerse cierta. ¿Puede asumirse que las proporciones de ingresos de lunes a domingo son (0.15,0.15,0.15,0.15,0.20,0.15,0.05)?
+
+
+El contraste que se debe resolver es:
+
+H0 =  Los ingresos en el hospital se producen en la misma proporción todos los días de la semana
+H1 =  Los ingresos en el hospital no se producen en la misma proporción todos los días de la semana
+
+
+
+```{r}
+chisq.test(Registros$Num_ingresos)
+```
+
+El p-valor asociado al contraste es **5.135e-05** el cual es menor que 0.05 por lo que, considerando un nivel de significación del 5%, se rechaza la hipótesis nula. Es decir, se concluye que los ingresos hospitalarios no se producen en la misma proporción todos los días de la semana.
+
+¿Puede asumirse que las proporciones de ingresos de lunes a domingo son (0.15,0.15,0.15,0.15,0.20,0.15,0.05)?
+
+```{r}
+pro <- c(0.15, 0.15, 0.15, 0.15, 0.20, 0.15, 0.05)
+chisq.test(Registros$Num_ingresos, p = pro)
+
+```
+
+El p-valor asociado es **0.146** que, al ser superior a 0.05, nos indica que a un nivel de significación del 5%, puede suponerse que los ingresos hospitalarios se producen según los valores que se recogen en el vector pro.
+
+
+
